@@ -1,0 +1,30 @@
+.active-link {
+    background-color: var(--primary);
+}
+
+.navbar-toggler {
+    margin: 10px 0 10px 0;
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+.dropdown-menu {
+    background-color: var(--dark);
+    width: 100%;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    left: 0;
+}
+
+.nav-link {
+    text-transform: capitalize;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    color: var(--white);
+    background-color: var(--primary);
+}

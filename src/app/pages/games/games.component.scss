@@ -1,0 +1,64 @@
+.img-container {
+    padding: 10px;
+    .img {
+        position: relative;
+        height: 150px;
+        width: 100%;
+        border-radius: 10px;
+        background-repeat: no-repeat, repeat;
+        background-size: 100% 100%;
+        align-items: center;
+        padding: 50px;
+        cursor: pointer;
+        .btn-game {
+            display: none;
+            clear: both;
+        }
+    }
+
+    .price {
+        width: 100%;
+        padding: 5px;
+        background-color: var(--primary);
+        color: var(--white);
+        border-radius: 0 0 10px 10px;
+        height: 30px;
+        position: absolute;
+        clear: both;
+        left: 0;
+        bottom: 0px;
+        display: none;
+    }
+}
+
+.img-container:hover {
+    .img {
+        box-shadow: 2px 2px 6px;
+        cursor: pointer;
+
+        .btn-game {
+            background-color: var(--primary);
+            color: var(--white);
+            font-weight: bold;
+            border: none;
+            position: relative;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            clear: both;
+        }
+
+        .price {
+            display: block;
+        }
+    }
+}
+
+.row {
+    width: 100% !important;
+}
+
+.center {
+    width: 100%;
+    align-items: center;
+}

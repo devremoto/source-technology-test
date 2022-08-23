@@ -1,0 +1,10 @@
+<div class="row center">
+    <div *ngFor="let game of games" class=" col-xl-2 col-md-3 col-sm-4 col-xs-6 col-12 img-container">
+        <div class="img" [ngStyle]="{'background-image':'url('+game!.image+'),url(assets/images/none.jpeg)'}">
+            <div class="ribbon ribbon-top-right" *ngIf="isNew(game)"><span>{{isNew(game)}}</span></div>
+            <button class="btn btn-warning btn-game">Play <br></button>
+            <span class="price" *ngIf="game.name">{{game.name}} <span *ngIf="getJackpot(game)">{{getJackpot(game) || 0 |
+                    currency}}</span></span>
+        </div>
+    </div>
+</div>
