@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { Jackpot } from 'src/app/models/jackpot';
 import { GameQuery } from 'src/app/state/game/game.query';
 import { GameService } from 'src/app/state/game/game.service';
 import { JackpotQuery } from 'src/app/state/jackpot/jackpot.query';
 import { JackpotService } from 'src/app/state/jackpot/jackpot.service';
-import { createGame, Game } from '../../models/game';
+import { Game } from '../../models/game';
 
 @Component({
   selector: 'app-games',
@@ -14,8 +15,7 @@ import { createGame, Game } from '../../models/game';
 })
 export class GamesComponent implements OnInit {
 
-  allGames: Game[] = [];
-  games: Game[] = [];
+  games$: Observable<Game[]> = new Observable<Game[]>();
   group = this.activatedRoute.snapshot.params['group']
   jackpots: Jackpot[] = [];
   constructor(
@@ -35,17 +35,18 @@ export class GamesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.load();
-    this.loadJackPots();
   }
 
   load() {
     this.group = this.activatedRoute.snapshot.params['group'];
     this.gameService.get();
-    this.gameQuery.selectAll().subscribe((result: Game[]) => {
-      this.games = this.group ? this.gameQuery.getByGroup(this.group) : result;
 
-    })
+    if (this.group == 'jackpots') {
+      this.loadJackPots();
+      this.games$ = this.gameService.getJackPots();
+    } else {
+      this.games$ = this.gameQuery.getByGroup(this.group);
+    }
   }
 
   loadJackPots() {
@@ -54,13 +55,6 @@ export class GamesComponent implements OnInit {
       this.jackpots = result;
     })
   }
-
-  getJackpot(game: Game) {
-    let jackpot = this.jackpots.find(x => x.game == game.id);
-    return jackpot?.amount || 0;
-  }
-
-
 
   isNew(game: Game) {
     if (this.group == "new" || this.group == "top") {
@@ -76,7 +70,6 @@ export class GamesComponent implements OnInit {
     }
 
     return false;
-
   }
 
   handleMissingImage(event: Event) {

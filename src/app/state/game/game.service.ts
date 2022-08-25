@@ -1,8 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Game, createGame } from 'src/app/models/game';
+import { Jackpot } from 'src/app/models/jackpot';
 import { environment } from 'src/environments/environment';
+import { JackpotQuery } from '../jackpot/jackpot.query';
 import { GameQuery } from './game.query';
 import { GameStore } from './game.store';
 
@@ -10,7 +12,11 @@ import { GameStore } from './game.store';
 export class GameService {
 
   gamesEndpoint = `${environment.api}games.php`
-  constructor(private gameStore: GameStore, private gameQuery: GameQuery, private http: HttpClient) {
+  constructor(
+    private gameStore: GameStore,
+    private gameQuery: GameQuery,
+    private jackpotQuery: JackpotQuery,
+    private http: HttpClient) {
   }
 
   get() {
@@ -23,17 +29,25 @@ export class GameService {
   getAll() {
     this.http.get<Game[]>(this.gamesEndpoint)
       .pipe(tap((entities: Game[]) => {
-        entities.forEach(x => {
-          switch (x.name.toLocaleLowerCase()) {
-            case "ball":
-            case "virtual":
-            case "fun":
-              x.group = 'other';
-              break;
-          }
-        })
         this.gameStore.set(entities.map(x => createGame(x)));
       })).subscribe();
+  }
+
+  getJackPots() {
+    let games = this.gameQuery.getAll();
+
+    return this.jackpotQuery.selectAll().pipe(
+      map<Jackpot[], Game[]>(jackpots => {
+        return jackpots.map((jackpot: Jackpot) => {
+          let game = games.find((game: Game) => game.id == jackpot.game);
+          if (game) {
+            console.log({ ...game, amount: jackpot.amount });
+            return { ...game, amount: jackpot.amount };
+          }
+          return {} as Game;
+        })
+      })
+    );
   }
 
   update(game: Partial<Game>) {

@@ -4,6 +4,7 @@ export interface Game {
     name: string;
     image: string;
     group: string;
+    amount: number;
 }
 
 export function createGame(params: Partial<Game>) {

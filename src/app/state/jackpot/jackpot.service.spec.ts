@@ -10,7 +10,7 @@ describe('JackpotService', () => {
   let service: JackpotService;
 
   beforeEach(() => {
-    const jackpotStoreStub = () => ({ set: arg => ({}) });
+    const jackpotStoreStub = () => ({ set: (arg: any) => ({}) });
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
@@ -34,7 +34,7 @@ describe('JackpotService', () => {
       const req = httpTestingController.expectOne('http://stage.whgstage.com/front-end-test/jackpots.php');
       expect(req.request.method).toEqual('GET');
       expect(jackpotStoreStub.set).toHaveBeenCalled();
-      req.flush();
+      req.flush("");
       httpTestingController.verify();
     });
   });

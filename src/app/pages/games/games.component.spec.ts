@@ -6,9 +6,7 @@ import { GameQuery } from 'src/app/state/game/game.query';
 import { GameService } from 'src/app/state/game/game.service';
 import { JackpotQuery } from 'src/app/state/jackpot/jackpot.query';
 import { JackpotService } from 'src/app/state/jackpot/jackpot.service';
-import { Game } from '../../models/game';
 import { GamesComponent } from './games.component';
-import { Category } from 'src/app/models/category';
 
 describe('GamesComponent', () => {
   let component: GamesComponent;
@@ -16,14 +14,14 @@ describe('GamesComponent', () => {
 
   beforeEach(() => {
     const activatedRouteStub = () => ({ snapshot: { params: {} } });
-    const routerStub = () => ({ events: { subscribe: f => f({}) } });
-    const gameQueryStub = () => ({
-      selectAll: () => ({ subscribe: f => f({}) }),
-      getByGroup: (group: Category) => ({})
+    const routerStub = () => ({ events: { subscribe: (f: any) => f({}) } });
+    const gameQueryStub = () => ({ getByGroup: (group: string) => ({}) });
+    const gameServiceStub = () => ({
+      get: () => ({}),
+      getJackPots: () => ({})
     });
-    const gameServiceStub = () => ({ get: () => ({}) });
     const jackpotQueryStub = () => ({
-      selectAll: () => ({ subscribe: f => f({}) })
+      selectAll: () => ({ subscribe: (f: any) => f({}) })
     });
     const jackpotServiceStub = () => ({ get: () => ({}) });
     TestBed.configureTestingModule({
@@ -47,14 +45,6 @@ describe('GamesComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it(`allGames has default value`, () => {
-    expect(component.allGames).toEqual([]);
-  });
-
-  it(`games has default value`, () => {
-    expect(component.games).toEqual([]);
-  });
-
   it(`jackpots has default value`, () => {
     expect(component.jackpots).toEqual([]);
   });
@@ -62,16 +52,6 @@ describe('GamesComponent', () => {
   describe('constructor', () => {
     it('makes expected calls', () => {
       expect(GamesComponent.prototype.load).toHaveBeenCalled();
-    });
-  });
-
-  describe('ngOnInit', () => {
-    it('makes expected calls', () => {
-      (<jasmine.Spy>component.load).calls.reset();
-      spyOn(component, 'loadJackPots').and.callThrough();
-      component.ngOnInit();
-      expect(component.load).toHaveBeenCalled();
-      expect(component.loadJackPots).toHaveBeenCalled();
     });
   });
 
@@ -83,14 +63,16 @@ describe('GamesComponent', () => {
       const gameServiceStub: GameService = fixture.debugElement.injector.get(
         GameService
       );
-      spyOn(gameQueryStub, 'selectAll').and.callThrough();
+      spyOn(component, 'loadJackPots').and.callThrough();
       spyOn(gameQueryStub, 'getByGroup').and.callThrough();
       spyOn(gameServiceStub, 'get').and.callThrough();
+      spyOn(gameServiceStub, 'getJackPots').and.callThrough();
       (<jasmine.Spy>component.load).and.callThrough();
       component.load();
-      expect(gameQueryStub.selectAll).toHaveBeenCalled();
+      expect(component.loadJackPots).toHaveBeenCalled();
       expect(gameQueryStub.getByGroup).toHaveBeenCalled();
       expect(gameServiceStub.get).toHaveBeenCalled();
+      expect(gameServiceStub.getJackPots).toHaveBeenCalled();
     });
   });
 
