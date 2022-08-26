@@ -47,7 +47,7 @@ export class GamesComponent implements OnInit, OnDestroy {
       this.loadJackPots();
       this.games$ = this.gameService.getJackPots();
     } else {
-      this.jackpots$.unsubscribe();
+      this.jackpots$?.unsubscribe();
       this.games$ = this.gameQuery.getByGroup(this.group);
     }
   }

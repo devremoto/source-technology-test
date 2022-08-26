@@ -14,7 +14,7 @@ export class JackpotService {
   }
 
   get() {
-    this.timer = interval(3000,);
+    this.timer = interval(3000);
     let api = this.http.get<Jackpot[]>(this.jackpotEndpoint)
 
     return this.timer.pipe(
