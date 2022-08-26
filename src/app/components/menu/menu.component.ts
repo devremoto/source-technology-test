@@ -18,7 +18,7 @@ export class MenuComponent implements OnInit {
     { description: 'Roullete', name: 'roulette', group: 'roulette' },
     { description: 'Table', name: 'table', group: 'table' },
     { description: 'Pocker', name: 'poker', group: 'poker' },
-    { description: 'Other', name: 'fun', group: 'other' },
+    { description: 'Other', name: 'other', group: 'other' },
   ];
 
   constructor() { }

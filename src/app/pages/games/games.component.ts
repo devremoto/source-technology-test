@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Jackpot } from 'src/app/models/jackpot';
 import { GameQuery } from 'src/app/state/game/game.query';
 import { GameService } from 'src/app/state/game/game.service';
@@ -13,11 +13,13 @@ import { Game } from '../../models/game';
   templateUrl: './games.component.html',
   styleUrls: ['./games.component.scss']
 })
-export class GamesComponent implements OnInit {
+export class GamesComponent implements OnInit, OnDestroy {
 
   games$: Observable<Game[]> = new Observable<Game[]>();
   group = this.activatedRoute.snapshot.params['group']
   jackpots: Jackpot[] = [];
+  jackpots$!: Subscription;
+
   constructor(
     private gameService: GameService,
     private gameQuery: GameQuery,
@@ -45,12 +47,13 @@ export class GamesComponent implements OnInit {
       this.loadJackPots();
       this.games$ = this.gameService.getJackPots();
     } else {
+      this.jackpots$.unsubscribe();
       this.games$ = this.gameQuery.getByGroup(this.group);
     }
   }
 
   loadJackPots() {
-    this.jackpotService.get();
+    this.jackpots$ = this.jackpotService.get().subscribe();
     this.jackpotQuery.selectAll().subscribe((result: Jackpot[]) => {
       this.jackpots = result;
     })
@@ -72,8 +75,8 @@ export class GamesComponent implements OnInit {
     return false;
   }
 
-  handleMissingImage(event: Event) {
-    (event.target as HTMLDivElement).style.backgroundColor = 'var(--dark)';
+  ngOnDestroy(): void {
+    this.jackpots$.unsubscribe();
   }
 
 }
